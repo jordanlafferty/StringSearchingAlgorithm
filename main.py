@@ -82,38 +82,38 @@ class Trie:
         else:
             return None
 
-    def insert(self, str, index):
+    def initialInsert(self, txt, length):
+        total = 1 + len(txt) - length
+        for x in range(total):
+            text = txt[x: x + length]
+            self.insert(text, x)
+
+    def insert(self, txt, index):
         currNode = self.root
-        for i in range(len(str)):
-            newStr = str[:i + 1]
-            if i == 0:
-                found = self.search(newStr)
-                if found is None:
-                    node = Node(newStr)
-                    currNode.children[newStr] = node
-                    currNode = node
-                else:
-                    currNode = found
-            else:
-                key = str[i]
+        for x in range(len(txt)):
+            newText = txt[:x + 1]
+            if x != 0:
+                key = txt[x]
                 if key in currNode.children.keys():
                     currNode = currNode.children[key]
                 else:
                     node = Node(key)
                     currNode.children[key] = node
                     currNode = node
+            else:
+                found = self.search(newText)
+                if found is None:
+                    node = Node(newText)
+                    currNode.children[newText] = node
+                    currNode = node
+                else:
+                    currNode = found
         currNode.index.append(index)
-
-    def patchInsert(self, text, windowSize):
-        n = len(text)
-        for i in range(n - windowSize + 1):
-            str = text[i: i + windowSize]
-            self.insert(str, i)
 
 
 def doTrie():
     trie1 = Trie()
-    trie1.patchInsert(text1, len(pattern1))
+    trie1.initialInsert(text1, len(pattern1))
     y = trie1.search(pattern1)
     if y is not None:
         for i in range(len(y.index)):
